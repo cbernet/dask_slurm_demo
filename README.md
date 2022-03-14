@@ -42,7 +42,7 @@ Answer all questions, make sure everything went well, and then log out and log i
 Create your conda environment for this exercise:
 
 ```bash
-conda create -n dask 
+conda create -n dask python=3.9
 ```
 
 Activate it: 
@@ -127,7 +127,52 @@ This is going to connect you to lyoserv from home, and will map:
 
 On your machine at home, point your browser to http://localhost:8888
 
-## Tutorials
+## Dask Tutorials
 
 * [dask_slurm.ipynb](dask_slurm.ipynb): How to run dask on the IP2I Slurm farm (dask delayed)
 * [dask_dataframe_slurm.ipynb](dask_dataframe_slurm.ipynb): Analysis of a large text dataset (dask dataframe)
+
+## Uproot Tutorial 
+
+Now, we're going to analyze ROOT files with dask on the IP2I Slurm Farm. 
+
+[ROOT](https://root.cern/) is a high performance C++ analysis platform used in most particle physics experiments, and a large number of astrophysics experiments ([Wikipedia](https://en.wikipedia.org/wiki/ROOT)). 
+
+In such experiments, the data has an instrinsic nested structure. In other words, we're not dealing with fixed columnar data such as tables or images. For example, a particle collision events at the LHC has: 
+
+* jets containing: 
+  * particles reconstructed from: 
+    * calorimeter clusters (sometimes)
+    * tracks reconstructed from: 
+      * a varying number of clusters from the tracking system layers.
+
+Such data cannot be analyzed with fixed numpy arrays. Hence no pandas dataframes, and no dask dataframes. 
+
+A first solution would be to describe your workflows with dask delayed and PyROOT, a library that provides python bindings to ROOT. This is fairly straightforward but: 
+
+* this provides only limited parallelization. 
+* PyROOT is slow, and definitely not adapted to the analysis of the large amount of data that will be collected at HL-LHC. 
+
+Another solution is to use [Awkward arrays](https://awkward-array.readthedocs.io/en/latest/). They make it possible to: 
+
+* define nested data structures
+* use vectorization for very fast processing, as numpy is doing
+
+[Uproot](https://uproot.readthedocs.io/en/latest/#) converts ROOT files to awkward arrays, without even the need to install ROOT.
+
+[Coffea](https://coffeateam.github.io/coffea/index.html) is a high level framework that facilitates analysis based on Uproot and Awkward arrays. 
+
+
+**Installation**
+
+```
+conda create -n coffea_dask python=3.9 coffea[dask] dask-jobqueue jupyter
+conda activate coffea_dask
+```
+
+
+Tutorial : 
+
+* [test_muons.ipynb](test_muons.ipynb): basic analysis of CMS data with Coffea, Uproot, and Awkward arrays.
+
+
