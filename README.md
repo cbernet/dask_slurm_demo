@@ -166,8 +166,9 @@ Another solution is to use [Awkward arrays](https://awkward-array.readthedocs.io
 **Installation**
 
 ```
-conda create -n coffea_dask python=3.9 coffea[dask] dask-jobqueue jupyter
+conda create -n coffea_dask python=3.9 
 conda activate coffea_dask
+pip install coffea[dask] dask-jobqueue jupyter
 ```
 
 
